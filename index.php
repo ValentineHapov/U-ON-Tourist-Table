@@ -62,6 +62,8 @@ $( document ).ready(function() {
 		success: function(html){
 		   var res = JSON.parse(html);
 		   outData = res;
+		   if (outData['status']=='error')
+			   alert(outData['errInfo'])
 		}
 		
 	});
@@ -90,6 +92,8 @@ function getTouristTable(page)
 		success: function(html){
 		   var res = JSON.parse(html);
 		   outData = res.result;
+		   if (res['status']=='error')
+			   alert(res['errInfo'])
 		}
 	});
 	return outData;
