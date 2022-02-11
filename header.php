@@ -115,4 +115,4 @@ function refreshTable()
 </script>
 </head>
 <body>
-<h1>TEST-PROJECT</h1>
+<h1>Таблица со списком туристов</h1>
