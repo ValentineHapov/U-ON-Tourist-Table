@@ -1,3 +1,16 @@
+<?php
+/**
+* Index-файл проекта
+*
+* Из-за того, что index-файл получился слишком статичным
+* я решил его сделать обычным HTML файлом, который содержит
+* Шаблон для таблицы, код JavaScript, и форму, которая всплывает
+* при потребности в редактировании и создании
+* @author ValentineHapov <haps-jr@list.ru>
+* @version 0.4
+* @package files
+*/
+?>
 <html>
 <head>
 <title>
@@ -6,14 +19,15 @@ TEST
 <script type="text/javascript" src="jquery.js"></script>
 <link href="styles.css" rel="stylesheet" type="text/css">
 <script type="text/javascript">
+
 function openFormAsNew() {
-  $(".shading").css("display","block");
-    $(".form-container").find("input").each(function (index1){
+	$(".shading").css("display","block");
+	$(".form-container").find("input").each(function (index1){
 		let data1 = $(this);
 		if (data1.attr("type") == "button" || data1.attr("type") == "submit")
 			return
-		data1.attr("value","");//
-  });
+		data1.attr("value","");
+	});
 }
 
 function openFormAsEdit(conf,selectedRow)
