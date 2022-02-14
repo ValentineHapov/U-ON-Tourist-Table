@@ -56,71 +56,65 @@
 		protected function makeCURLRequest($urlTale, $isPostMethod = false, $postFields = null)
 		{
 			$curTime = time();
-			if ($curTime == self::$lastConnect)
-				sleep(1);
 			
 			$url = 'https://api.u-on.ru/'. self::getAPIKey() . '/' .$urlTale;
 			
-			$curl = curl_init();
-			if ($isPostMethod) {
-				curl_setopt_array($curl, array(
+			$curlParams =  array(
 					CURLOPT_RETURNTRANSFER => true,
 					CURLOPT_URL => $url,
-					CURLOPT_POST => true,
-					CURLOPT_POSTFIELDS => $postFields,
 					CURLOPT_SSL_VERIFYHOST => false,
 					CURLOPT_SSL_VERIFYPEER => false
-				));
+				);
+			
+			$curl = curl_init();
+			if ($isPostMethod) {
+				$curlParams[CURLOPT_POST] = true;
+				$curlParams[CURLOPT_POSTFIELDS] = $postFields;
+				curl_setopt_array($curl, $curlParams);
 			}
 			else
 			{
-				curl_setopt_array($curl, array(
-					CURLOPT_RETURNTRANSFER => true,
-					CURLOPT_URL =>$url,
-					CURLOPT_POST => false,
-					CURLOPT_SSL_VERIFYHOST => false,
-					CURLOPT_SSL_VERIFYPEER => false
-				));
+				$curlParams[CURLOPT_POST] = false;
+				curl_setopt_array($curl,$curlParams);
 			}
+			usleep(100000);
+			
+			$returnData = array (
+				"status" => "error",
+				"result" => array(),
+				"errInfo" => "",
+				"errors" => array(),
+			);
 			
 			if(($resp = curl_exec($curl)) === false)
 			{
 				$curlError = curl_error($curl);
-				$returnData = array (
-					"status" => "error",
-					"result" => array(),
-					"errInfo" => "Ошибка curl: " . $curlError,
-					"errors" => array($curlError),
-				);
+				$returnData["errInfo"] = "Ошибка curl: " . $curlError;
+				$returnData["errors"] = array($curlError);
+				return $returnData;	
 			}
 			else if (isset(($outJSON = json_decode($resp))->result) && ($outJSON->result!=200))
 			{
-				$returnData = array (
-					"status" => "error",
-					"result" => $outJSON->result,
-					"errInfo" => $outJSON->message,
-					"errors" => array($outJSON->message),
-				);
+				$returnData["result"] = $outJSON->result;
+				$returnData["errInfo"] = $outJSON->message;
+				$returnData["errors"] = array($outJSON->message);
+				return $returnData;	
 			}
 			else if (isset($outJSON->error))
 			{
-				$returnData = array (
-					"status" => "error",
-					"result" => $outJSON->error->code,
-					"errInfo" => $outJSON->error->message,
-					"errors" => array($outJSON->error->message),
-				);
+				$returnData["result"] = $outJSON->result;
+				$returnData["errInfo"] = $outJSON->message;
+				$returnData["errors"] = array($outJSON->message);
+				return $returnData;	
 			}
-			else
-			{
-				unset($outJSON->result);
-				$returnData = array (
-					"status" => "success",
-					"result" => $outJSON,
-					"errInfo" => "",
-					"errors" => array(),
-				);
-			}
+			unset($outJSON->result);
+			$returnData = array (
+				"status" => "success",
+				"result" => $outJSON,
+				"errInfo" => "",
+				"errors" => array(),
+			);
+
 			curl_close($curl);
 			return $returnData;
 		}

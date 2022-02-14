@@ -56,9 +56,35 @@
 .shading {
 	background: rgba(102, 102, 102, 0.5);
 	width: 100%;
-	height: 100%;
+	height: 100000%;
 	position: absolute;
 	top: 0;
 	left: 0;
 	display: none;
+}
+
+.mainTable {
+	width: 100%;
+	margin-bottom: 20px;
+	border-collapse: collapse; 
+}
+
+.mainTable th {
+	font-weight: bold;
+	padding: 5px;
+	background: #efefef;
+	border: 1px solid #dddddd;
+}
+
+.mainTable td {
+	border: 1px solid #dddddd;
+	padding: 5px;
+}
+
+.mainTable tr td:first-child, .table tr th:first-child {
+	border-left: none;
+}
+
+.mainTable tr td:last-child, .table tr th:last-child {
+	border-right: none;
 }
